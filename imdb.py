@@ -1,10 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-#url = "https://www.imdb.com/search/title?user_rating=8.0,&start=1&ref_=adv_nxt"
 
-
-# html = requests.get(url).text
-#soup = BeautifulSoup(html,'lxml')
 
 class Imdb():
     url = ''
@@ -13,7 +9,7 @@ class Imdb():
     end = ''
     total_page = 0
     movie_links = []
-    def __init__(self, url, per_page=50, start=0,end=0):#1005, 1007
+    def __init__(self, url, per_page=50, start=1,end=0):#1005, 1007
             self.url=url
             self.per_page = per_page
             self.start = start
@@ -37,15 +33,38 @@ class Imdb():
                 break
             link = "https://www.imdb.com"+ movie.find('div', class_="lister-item-image").a['href']
             self.movie_links.append(link)
-            print(link)
+
+    def get_movie_info(self):
+        for movie in self.movie_links:
+            html = requests.get(movie).content
+            soup = BeautifulSoup(html,'lxml')
+
+            title = soup.find('div', class_="title_wrapper").h1.text
+            
+            year = title[-6:-2]
+            title = title[:-7].strip()
+            rating = soup.find('span', attrs={'itemprop':'ratingValue'}).text
+            director = soup.find('div',class_="credit_summary_item").a.text.strip()
+            metascore = soup.find('span', class_="metascore")
+            
+            if(metascore == None):
+                metascore = "No Metascore Found"
+            print(director)
+            print(year)
+            print(title)
+            print(rating)
+            print('-'*10)
 
 
 
 
         
-imdb = Imdb(url='https://www.imdb.com/search/title?user_rating=8.0', per_page=50, start=1005,  end=1018)
+imdb = Imdb(url='https://www.imdb.com/search/title?user_rating=8.0', per_page=50, end=5)
 
 imdb.browse_all_page()
+
+imdb.get_movie_info()
+
 
 
 
