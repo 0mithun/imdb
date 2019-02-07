@@ -51,7 +51,7 @@ def get_movie_details(movie_links):
             else:
                 budget = box.parent.text.strip().split('\n')[0]
                 try:
-                    budget = budget.split('$')[1]
+                    budget = budget.split('Budget:')[1]
                 except IndexError:
                     budget = budget.split('\xa0')[1]
             
@@ -60,7 +60,7 @@ def get_movie_details(movie_links):
 
 
 
-browse_all_page(url="https://www.imdb.com/search/title?title_type=feature&user_rating=8.0,", start=1, end=100)
+browse_all_page(url="https://www.imdb.com/search/title?title_type=feature&user_rating=8.0,", start=1, end=10)
 
 get_movie_details(movie_links)
 
